@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Happy Birthday Pred</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1330; --dot:#8fa8ff; --card:#f8d8e4; --env:#f6cdb0; --env-dark:#e9b895;
+  --paper:#fffbf2; --ink:#2a2547; --gold:#f5b93a;
+}
+*{box-sizing:border-box;margin:0}
+html,body{min-height:100%}
+body{
+  font-family:'Nunito',system-ui,sans-serif; color:var(--ink);
+  background-color:var(--navy);
+  background-image:
+    radial-gradient(rgba(143,168,255,.16) 1.6px,transparent 1.6px),
+    radial-gradient(rgba(143,168,255,.08) 1px,transparent 1px);
+  background-size:30px 30px,15px 15px; background-position:0 0,7px 7px;
+  display:grid; place-items:center; padding:24px;
+}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid #6b7cff;outline-offset:3px}
+
+/* ---------- scene ---------- */
+.card{
+  width:min(92vw,440px); background:var(--card); border-radius:38px;
+  padding:130px 0 40px; display:flex; flex-direction:column; align-items:center; gap:34px;
+  box-shadow:0 24px 60px rgba(0,0,0,.45);
+}
+.env{
+  --w:min(300px,76vw); width:var(--w); height:calc(var(--w)*.68);
+  position:relative; perspective:900px; transition:transform .25s;
+}
+.env:not(.open):hover{transform:translateY(-4px) rotate(-1deg)}
+.env>*{position:absolute;inset:0}
+.back{background:var(--env-dark);border-radius:10px}
+.paper{
+  inset:auto 7% 6% 7%; height:88%; background:var(--paper); border-radius:6px;
+  padding:14px 16px; z-index:2; font-family:'Kalam',cursive; font-size:1.15rem;
+  transition:transform .8s cubic-bezier(.2,.8,.2,1) .35s; text-align:left;
+  background-image:repeating-linear-gradient(transparent 0 25px,#dfe3f5 25px 26px);
+  background-position:0 44px; background-repeat:no-repeat;
+}
+.open .paper{transform:translateY(-42%)}
+.front{background:var(--env);clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%);border-radius:10px;z-index:3}
+.flap{
+  height:55%; bottom:auto; background:#f0bd9b; clip-path:polygon(0 0,100% 0,50% 100%);
+  transform-origin:top; z-index:4; transition:transform .6s ease, z-index 0s .3s;
+}
+.open .flap{transform:rotateX(180deg);z-index:1}
+.label{
+  inset:auto 0 14% 0; z-index:5; text-align:center; pointer-events:none;
+  font-family:'Kalam',cursive; font-weight:700; font-size:1.5rem; color:var(--ink);
+}
+.hint{font-weight:800;font-size:.95rem;color:#6b5b86}
+
+/* ---------- full letter ---------- */
+.overlay{
+  position:fixed; inset:0; z-index:20; background:rgba(4,8,26,.85);
+  display:grid; place-items:center; padding:16px; opacity:0; transition:opacity .35s;
+}
+.overlay.show{opacity:1}
+.sheet{
+  width:min(94vw,560px); max-height:92vh; overflow:auto; background:var(--paper);
+  border-radius:16px; padding:34px 28px 28px; transform:translateY(60px) scale(.96);
+  transition:transform .5s cubic-bezier(.2,.8,.2,1);
+  font-family:'Kalam',cursive; font-size:1.2rem; line-height:1.65;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+.overlay.show .sheet{transform:none}
+.sheet p{margin-bottom:1em}
+.sig{text-align:right;font-weight:700}
+.close{position:sticky;top:-22px;float:right;margin:-18px -14px 0 0;width:38px;height:38px;border-radius:50%;background:#ece6f7;font-size:1.3rem;line-height:1}
+.next{
+  display:block; margin:22px auto 4px; background:var(--navy); color:#fff; padding:13px 26px;
+  border-radius:999px; font-family:'Nunito',sans-serif; font-weight:800; font-size:1rem;
+}
+
+/* ---------- rating page ---------- */
+.rate{
+  width:min(92vw,440px); background:var(--card); border-radius:38px; padding:40px 28px 34px;
+  text-align:center; box-shadow:0 24px 60px rgba(0,0,0,.45);
+}
+.rate h1{font-family:'Kalam',cursive;font-size:2rem;line-height:1.2;margin-bottom:8px}
+.rate p{font-weight:600;color:#5d4f78;margin-bottom:22px}
+.stars{display:flex;justify-content:center;gap:6px}
+.star{font-size:2.6rem;line-height:1;color:#fff;-webkit-text-stroke:2px #d9b7c6;transition:transform .15s}
+.star.on{color:var(--gold);-webkit-text-stroke:2px #d9962a}
+.star:hover{transform:scale(1.15)}
+.verdict{height:1.6em;margin:8px 0 14px;font-weight:800}
+textarea{
+  width:100%; min-height:130px; resize:vertical; border:0; border-radius:20px; padding:14px 16px;
+  font:600 1rem 'Nunito',sans-serif; color:var(--ink); background:var(--paper);
+}
+.send{margin-top:16px;background:var(--navy);color:#fff;padding:13px 30px;border-radius:999px;font-weight:800}
+.send:disabled{opacity:.45;cursor:not-allowed}
+.goback{display:block;margin:-14px 0 14px -6px;padding:8px 10px;font-weight:800;font-size:.95rem;color:#6b5b86}
+.goback:hover{color:var(--ink)}
+.msg{margin-top:12px;font-weight:800;min-height:1.4em}
+.msg.err{color:#b0264a}
+
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important;transition-delay:0s!important}}
+</style>
+</head>
+<body>
+
+<main class="card" id="scene">
+  <button class="env" id="env" aria-label="Open the envelope">
+    <div class="back"></div>
+    <div class="paper" id="peek">For Pred</div>
+    <div class="front"></div>
+    <div class="flap"></div>
+    <div class="label">Happy Birthday Pred.</div>
+  </button>
+  <p class="hint" id="hint">Tap the envelope</p>
+</main>
+
+<div class="overlay" id="overlay" hidden>
+  <article class="sheet" id="sheet" role="dialog" aria-label="Your letter">
+    <button class="close" id="close" aria-label="Close letter">&times;</button>
+
+    <p>Yo wsg pred HAPPY BIRTHDAY!!!!!!!!!!!!!!! Your bitchass is finally 20 and you are finally in da unc stage of your life. Now it’s gon get serious and all. Life, expectations, wagera wagera but don’t take it all in a way where you’re scared to face all this and don’t be. Even if you’re not ready for the day, it cannot always be night (saw my kanye ref there? (ik this is not consoling enough but get the feeling not the word).</p>
+
+    <p>Ik it’s been only been 10 months since we know each other and 5 of them, we’ve been dating (best decision) but ik you enough that ik you’ll do absolutely amazing in your 20s and you’ll achieve whatever you wish to achieve and not the happiest (I’ll keep you grounded on that, I hate you I don’t want you to be happy) person.</p>
+
+    <p>As I heard from Ankur Warikoo once that 20s is the age to explore and you should explore yourself and understand what you want from life so do that too and don’t just fuck yourself in the work. (Don’t explore dating options, keep me pls). Ik mai gyaan chod rha hu but I barely write to people and idk what to write I just know how to write long ass messages (wish I had this skill in writing exams but whatever).</p>
+
+    <p>You’re the first person outside my family who is really close to me who is also turning 20. I just feel so proud seeing old people turning old like bro they got so much fucking experience in their life and these fuckers will share their wisdom with me on sm master oogway shi.</p>
+
+    <p>Start earning buy me shit and live happily anika I genuinely am so happy that you’re stepping in an age where there is high unemployment, ai bubble and too many creeps like me creeping around especially on linkedin but don’t let anything come in the way between you and your constipated ass, y’all work in synchronization. Learn to cook bhenchod you’ll die alone also it’ll help in being an achi bahu in the future, time is coming. ALL ROADS LEAD TO YOUR _______.</p>
+
+    <p>Imma end this shi I can’t write anything else for now I could’ve written better but ig I get conscious while writing so I forget a lot of shit that I want to write, critically review this message and send me the review later with rating out of 5 stars at the end and your remarks on this letter you’ll have the space to write so take your time to write. I LOVE YOU SO MUCH ANIKA I CAN’T WAIT FOR YOU TO TURN 21. And it’s not because of what you think (it is) but because I can keep throwing 21 savage references on you. Pardon my english grammar. Lih Lah Luh</p>
+
+    <p class="sig">- Da real goat</p>
+
+    <button class="next" id="next">Review this letter</button>
+  </article>
+</div>
+
+<section class="rate" id="rate" hidden>
+  <div id="form">
+    <button class="goback" id="goback">&larr; Back to the letter</button>
+    <h1>Okay critic, your review.</h1>
+    <p>Rate the letter out of 5 and leave your remarks. They come straight to me.</p>
+    <div class="stars" id="stars" role="radiogroup" aria-label="Rating out of 5"></div>
+    <div class="verdict" id="verdict" aria-live="polite"></div>
+    <textarea id="remark" maxlength="3000" placeholder="Your remarks (honest, but nice)"></textarea>
+    <button class="send" id="send" disabled>Send review</button>
+    <div class="msg" id="msg" aria-live="polite"></div>
+  </div>
+  <div id="thanks" hidden>
+    <h1>Review sent.</h1>
+    <p>Happy birthday again, Pred.</p>
+  </div>
+</section>
+
+<script>
+const $ = s => document.querySelector(s);
+let stage = 0, rating = 0;
+const words = ['', 'Rough', 'Meh', 'Pretty good', 'Great', 'Goat-tier'];
+
+/* envelope: click 1 opens it, click 2 opens the full letter */
+$('#env').addEventListener('click', () => {
+  if (stage === 0) {
+    $('#env').classList.add('open');
+    $('#env').setAttribute('aria-label', 'Read the letter');
+    $('#hint').textContent = 'Now tap the letter';
+    stage = 1;
+  } else {
+    showLetter();
+  }
+});
+function showLetter(){
+  const o = $('#overlay');
+  o.hidden = false;
+  requestAnimationFrame(() => o.classList.add('show'));
+  document.body.style.overflow = 'hidden';
+  $('#sheet').scrollTop = 0;
+}
+function hideLetter(){
+  const o = $('#overlay');
+  o.classList.remove('show');
+  setTimeout(() => { o.hidden = true; }, 350);
+  document.body.style.overflow = '';
+}
+$('#close').addEventListener('click', hideLetter);
+
+/* next page */
+$('#next').addEventListener('click', () => {
+  hideLetter();
+  $('#scene').hidden = true;
+  $('#rate').hidden = false;
+});
+
+/* back to the letter (rating and remarks are kept) */
+$('#goback').addEventListener('click', () => {
+  $('#rate').hidden = true;
+  $('#scene').hidden = false;
+  showLetter();
+});
+
+/* stars */
+const starsEl = $('#stars');
+for (let i = 1; i <= 5; i++) {
+  const b = document.createElement('button');
+  b.className = 'star'; b.textContent = '★'; b.setAttribute('role', 'radio');
+  b.setAttribute('aria-label', i + ' star' + (i > 1 ? 's' : ''));
+  b.addEventListener('click', () => setRating(i));
+  starsEl.appendChild(b);
+}
+function setRating(n){
+  rating = n;
+  [...starsEl.children].forEach((s, i) => {
+    s.classList.toggle('on', i < n);
+    s.setAttribute('aria-checked', i + 1 === n);
+  });
+  $('#verdict').textContent = words[n];
+  $('#send').disabled = false;
+}
+
+/* send to /api/feedback (serverless function emails it to you) */
+$('#send').addEventListener('click', async () => {
+  const btn = $('#send'), msg = $('#msg');
+  btn.disabled = true; msg.className = 'msg'; msg.textContent = 'Sending...';
+  try {
+    const r = await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rating, remark: $('#remark').value.trim() })
+    });
+    if (!r.ok) throw new Error('bad status');
+    $('#form').hidden = true;
+    $('#thanks').hidden = false;
+  } catch (e) {
+    msg.className = 'msg err';
+    msg.textContent = 'Could not send. Check your connection and try again.';
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
